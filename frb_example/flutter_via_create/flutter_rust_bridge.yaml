@@ -1,4 +1,6 @@
-rust_input: crate::api
+rust_input: crate::frb_api
 rust_root: rust/
 dart_output: lib/src/rust
 local: true
+rust_preamble: |
+  use serde_json::Value;

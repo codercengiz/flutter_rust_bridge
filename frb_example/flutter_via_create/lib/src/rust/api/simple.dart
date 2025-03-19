@@ -3,8 +3,36 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+import '../frb_api.dart';
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiSimpleGreet(name: name);
+class MyStruct {
+  final int counter;
+  final Value data;
+
+  const MyStruct.raw({
+    required this.counter,
+    required this.data,
+  });
+
+  static MyStruct fromJson({required String json}) =>
+      RustLib.instance.api.crateApiSimpleMyStructFromJson(json: json);
+
+  factory MyStruct() => RustLib.instance.api.crateApiSimpleMyStructNew();
+
+  String toJson() => RustLib.instance.api.crateApiSimpleMyStructToJson(
+        that: this,
+      );
+
+  @override
+  int get hashCode => counter.hashCode ^ data.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MyStruct &&
+          runtimeType == other.runtimeType &&
+          counter == other.counter &&
+          data == other.data;
+}
