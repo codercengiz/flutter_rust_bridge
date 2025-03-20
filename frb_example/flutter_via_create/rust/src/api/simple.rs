@@ -25,7 +25,7 @@ impl MyStruct {
     
     pub fn new() -> Self {
         Self {
-            counter: 0,
+            counter: 13,
             data: serde_json::json!({}),
         }
     }

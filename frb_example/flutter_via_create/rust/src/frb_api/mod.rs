@@ -1,29 +1,33 @@
 use crate::api::simple;
-use crate::frb_generated::{MoiArcPool, MoiArcValue, RustAutoOpaque};
-use flutter_rust_bridge::for_generated::RustAutoOpaqueInner;
+use crate::frb_generated::RustAutoOpaque;
 use flutter_rust_bridge::frb;
 
-struct MyStruct (RustAutoOpaque<simple::MyStruct>);
-flutter_rust_bridge::frb_generated_moi_arc_impl_value!(
-    RustAutoOpaqueInner<simple::MyStruct>
-);
+pub struct MyParentStruct(pub RustAutoOpaque<simple::MyStruct>);
 
-impl MyStruct {
-    #[ frb(sync)]
-    pub fn from_json(json: &str) -> Result<MyStruct, serde_json::Error> {
+impl MyParentStruct {
+    #[frb(sync)]
+    pub fn from_json(json: &str) -> Result<MyParentStruct, serde_json::Error> {
         let device_message = simple::MyStruct::from_json(json)?;
-        Ok(MyStruct(RustAutoOpaque::new(device_message)))
+        Ok(MyParentStruct(RustAutoOpaque::new(device_message)))
     }
 
-    #[ frb(sync)]
+    #[frb(sync)]
     pub fn to_json(&self) -> String {
         self.0.try_read().unwrap().to_json()
     }
 
-    #[ frb(sync)]
+    #[frb(sync)]
     pub fn new() -> Self {
-        MyStruct(RustAutoOpaque::new(simple::MyStruct::new(
+        MyParentStruct(RustAutoOpaque::new(simple::MyStruct::new()))
+    }
 
-        )))
+    #[frb(sync)]
+    pub fn get_data(&self) -> serde_json::Value {
+        self.0.try_read().unwrap().data.clone()
+    }
+
+    #[frb(sync)]
+    pub fn compare_my_struct(&self, other: &MyParentStruct) -> bool {
+        self.0.try_read().unwrap().to_json() == other.0.try_read().unwrap().to_json()
     }
 }

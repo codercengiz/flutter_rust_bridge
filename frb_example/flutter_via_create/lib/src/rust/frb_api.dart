@@ -6,7 +6,43 @@
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `get_pool`
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< MyStruct>>
+abstract class MyStruct implements RustOpaqueInterface {}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner< Value>>
 abstract class Value implements RustOpaqueInterface {}
+
+class MyParentStruct {
+  final MyStruct field0;
+
+  const MyParentStruct.raw({
+    required this.field0,
+  });
+
+  bool compareMyStruct({required MyParentStruct other}) => RustLib.instance.api
+      .crateFrbApiMyParentStructCompareMyStruct(that: this, other: other);
+
+  static MyParentStruct fromJson({required String json}) =>
+      RustLib.instance.api.crateFrbApiMyParentStructFromJson(json: json);
+
+  Value getData() => RustLib.instance.api.crateFrbApiMyParentStructGetData(
+        that: this,
+      );
+
+  factory MyParentStruct() =>
+      RustLib.instance.api.crateFrbApiMyParentStructNew();
+
+  String toJson() => RustLib.instance.api.crateFrbApiMyParentStructToJson(
+        that: this,
+      );
+
+  @override
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MyParentStruct &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}

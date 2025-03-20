@@ -3,4 +3,4 @@ rust_root: rust/
 dart_output: lib/src/rust
 local: true
 rust_preamble: |
-  use serde_json::Value;
+  use serde_json::Value; use crate::api::simple::MyStruct;

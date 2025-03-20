@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_via_create/src/rust/api/simple.dart';
+import 'package:flutter_via_create/src/rust/frb_api.dart';
 import 'package:flutter_via_create/src/rust/frb_generated.dart';
 
-MyStruct? myStruct;
+MyParentStruct? myStruct;
 Future<void> main() async {
   await RustLib.init();
-  myStruct = MyStruct();
+  myStruct = MyParentStruct();
   runApp(const MyApp());
 }
 
@@ -23,10 +23,18 @@ class MyApp extends StatelessWidget {
               ElevatedButton(
                   onPressed: () {
                     print(
-                        'My Struct is disposed: ${myStruct?.data.isDisposed}');
+                        'My Struct is disposed: ${myStruct?.field0.isDisposed}');
+                    print(
+                        'My Struct counter is: ${myStruct?.getData()} after printJson');
                     printJson(myStruct!);
                     print(
-                        'My Struct is disposed: ${myStruct?.data.isDisposed} after printJson');
+                        'My Struct counter is: ${myStruct?.getData()} after printJson');
+                    print(
+                        'My Struct is disposed: ${myStruct?.field0.isDisposed} after printJson');
+                    print(
+                        'Two structs are same: ${myStruct?.compareMyStruct(other: MyParentStruct())} ');
+                    print(
+                        'Two structs are same: ${myStruct?.compareMyStruct(other: MyParentStruct())} ');
                     printJson(myStruct!);
                   },
                   child: Text('Test')),
@@ -38,7 +46,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-String? printJson(MyStruct struct) {
+String? printJson(MyParentStruct struct) {
   try {
     print(struct.toJson());
   } catch (e) {

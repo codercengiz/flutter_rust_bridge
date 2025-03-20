@@ -3,7 +3,6 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/simple.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'frb_api.dart';
@@ -67,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.9.0';
 
   @override
-  int get rustContentHash => 1759503043;
+  int get rustContentHash => -232256836;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -78,11 +77,24 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  MyStruct crateApiSimpleMyStructFromJson({required String json});
+  bool crateFrbApiMyParentStructCompareMyStruct(
+      {required MyParentStruct that, required MyParentStruct other});
 
-  MyStruct crateApiSimpleMyStructNew();
+  MyParentStruct crateFrbApiMyParentStructFromJson({required String json});
 
-  String crateApiSimpleMyStructToJson({required MyStruct that});
+  Value crateFrbApiMyParentStructGetData({required MyParentStruct that});
+
+  MyParentStruct crateFrbApiMyParentStructNew();
+
+  String crateFrbApiMyParentStructToJson({required MyParentStruct that});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_MyStruct;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_MyStruct;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MyStructPtr;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Value;
 
@@ -100,74 +112,134 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  MyStruct crateApiSimpleMyStructFromJson({required String json}) {
+  bool crateFrbApiMyParentStructCompareMyStruct(
+      {required MyParentStruct that, required MyParentStruct other}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_my_parent_struct(that, serializer);
+        sse_encode_box_autoadd_my_parent_struct(other, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateFrbApiMyParentStructCompareMyStructConstMeta,
+      argValues: [that, other],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateFrbApiMyParentStructCompareMyStructConstMeta =>
+      const TaskConstMeta(
+        debugName: "my_parent_struct_compare_my_struct",
+        argNames: ["that", "other"],
+      );
+
+  @override
+  MyParentStruct crateFrbApiMyParentStructFromJson({required String json}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(json, serializer);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_my_struct,
+        decodeSuccessData: sse_decode_my_parent_struct,
         decodeErrorData: sse_decode_AnyhowException,
       ),
-      constMeta: kCrateApiSimpleMyStructFromJsonConstMeta,
+      constMeta: kCrateFrbApiMyParentStructFromJsonConstMeta,
       argValues: [json],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleMyStructFromJsonConstMeta =>
+  TaskConstMeta get kCrateFrbApiMyParentStructFromJsonConstMeta =>
       const TaskConstMeta(
-        debugName: "my_struct_from_json",
+        debugName: "my_parent_struct_from_json",
         argNames: ["json"],
       );
 
   @override
-  MyStruct crateApiSimpleMyStructNew() {
+  Value crateFrbApiMyParentStructGetData({required MyParentStruct that}) {
     return handler.executeSync(SyncTask(
       callFfi: () {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_my_struct,
-        decodeErrorData: null,
-      ),
-      constMeta: kCrateApiSimpleMyStructNewConstMeta,
-      argValues: [],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateApiSimpleMyStructNewConstMeta => const TaskConstMeta(
-        debugName: "my_struct_new",
-        argNames: [],
-      );
-
-  @override
-  String crateApiSimpleMyStructToJson({required MyStruct that}) {
-    return handler.executeSync(SyncTask(
-      callFfi: () {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_my_struct(that, serializer);
+        sse_encode_box_autoadd_my_parent_struct(that, serializer);
         return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue,
         decodeErrorData: null,
       ),
-      constMeta: kCrateApiSimpleMyStructToJsonConstMeta,
+      constMeta: kCrateFrbApiMyParentStructGetDataConstMeta,
       argValues: [that],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateApiSimpleMyStructToJsonConstMeta =>
+  TaskConstMeta get kCrateFrbApiMyParentStructGetDataConstMeta =>
       const TaskConstMeta(
-        debugName: "my_struct_to_json",
+        debugName: "my_parent_struct_get_data",
         argNames: ["that"],
       );
+
+  @override
+  MyParentStruct crateFrbApiMyParentStructNew() {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_my_parent_struct,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateFrbApiMyParentStructNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateFrbApiMyParentStructNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "my_parent_struct_new",
+        argNames: [],
+      );
+
+  @override
+  String crateFrbApiMyParentStructToJson({required MyParentStruct that}) {
+    return handler.executeSync(SyncTask(
+      callFfi: () {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_my_parent_struct(that, serializer);
+        return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 5)!;
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateFrbApiMyParentStructToJsonConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateFrbApiMyParentStructToJsonConstMeta =>
+      const TaskConstMeta(
+        debugName: "my_parent_struct_to_json",
+        argNames: ["that"],
+      );
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_MyStruct => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_MyStruct => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct;
 
   RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Value =>
       wire.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue;
@@ -182,11 +254,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MyStruct
+      dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+        raw);
+  }
+
+  @protected
   Value
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return ValueImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  MyStruct
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MyStructImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -204,15 +293,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MyStruct dco_decode_box_autoadd_my_struct(dynamic raw) {
+  bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_my_struct(raw);
+    return raw as bool;
   }
 
   @protected
-  int dco_decode_i_32(dynamic raw) {
+  MyParentStruct dco_decode_box_autoadd_my_parent_struct(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as int;
+    return dco_decode_my_parent_struct(raw);
   }
 
   @protected
@@ -222,16 +311,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MyStruct dco_decode_my_struct(dynamic raw) {
+  MyParentStruct dco_decode_my_parent_struct(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 2)
-      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
-    return MyStruct.raw(
-      counter: dco_decode_i_32(arr[0]),
-      data:
-          dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-              arr[1]),
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return MyParentStruct.raw(
+      field0:
+          dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+              arr[0]),
     );
   }
 
@@ -261,11 +349,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  MyStruct
+      sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner =
+        sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+            deserializer);
+    return inner;
+  }
+
+  @protected
   Value
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return ValueImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  MyStruct
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MyStructImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -286,15 +394,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MyStruct sse_decode_box_autoadd_my_struct(SseDeserializer deserializer) {
+  bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_my_struct(deserializer));
+    return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
-  int sse_decode_i_32(SseDeserializer deserializer) {
+  MyParentStruct sse_decode_box_autoadd_my_parent_struct(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getInt32();
+    return (sse_decode_my_parent_struct(deserializer));
   }
 
   @protected
@@ -305,13 +414,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  MyStruct sse_decode_my_struct(SseDeserializer deserializer) {
+  MyParentStruct sse_decode_my_parent_struct(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_counter = sse_decode_i_32(deserializer);
-    var var_data =
-        sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
+    var var_field0 =
+        sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
             deserializer);
-    return MyStruct.raw(counter: var_counter, data: var_data);
+    return MyParentStruct.raw(field0: var_field0);
   }
 
   @protected
@@ -332,9 +440,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  bool sse_decode_bool(SseDeserializer deserializer) {
+  int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return deserializer.buffer.getUint8() != 0;
+    return deserializer.buffer.getInt32();
   }
 
   @protected
@@ -346,11 +454,29 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          MyStruct self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+        self, serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
           Value self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as ValueImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+          MyStruct self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as MyStructImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -369,16 +495,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_my_struct(
-      MyStruct self, SseSerializer serializer) {
+  void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_my_struct(self, serializer);
+    serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
-  void sse_encode_i_32(int self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_my_parent_struct(
+      MyParentStruct self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putInt32(self);
+    sse_encode_my_parent_struct(self, serializer);
   }
 
   @protected
@@ -390,11 +516,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_my_struct(MyStruct self, SseSerializer serializer) {
+  void sse_encode_my_parent_struct(
+      MyParentStruct self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.counter, serializer);
-    sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerValue(
-        self.data, serializer);
+    sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMyStruct(
+        self.field0, serializer);
   }
 
   @protected
@@ -415,10 +541,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_bool(bool self, SseSerializer serializer) {
+  void sse_encode_i_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    serializer.buffer.putUint8(self ? 1 : 0);
+    serializer.buffer.putInt32(self);
   }
+}
+
+@sealed
+class MyStructImpl extends RustOpaque implements MyStruct {
+  // Not to be used by end users
+  MyStructImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  MyStructImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_MyStruct,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_MyStruct,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_MyStructPtr,
+  );
 }
 
 @sealed
